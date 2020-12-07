@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>js实现router</title>
+    <link rel="shortcut icon" href="title.jpg">
+    <style>
+        header {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 70%;
+            height: 100px;
+            margin: 30px auto;
+            box-shadow: 4px 4px 10px #999;
+            background: -webkit-linear-gradient(left, skyblue, pink);
+        }
+
+        #router-view {
+            width: 80%;
+            min-height: 300px;
+            margin: 0 auto;
+            box-shadow: 4px 4px 10px #999;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="/home">首页</a>
+        <a href="/list">分类</a>
+        <a href="/about">关于</a>
+    </header>
+    <div id="router-view"></div>
+    <script>
+        function Vue(obj) {
+            let vue = {}
+            vue.router = obj.router || []
+            vue.init = function () {
+                document.querySelectorAll('a').forEach((item, index) => {
+                    item.addEventListener('click', (event) => {
+                        let e = event || window.event
+                        if (e.preventDefault) {
+                            e.preventDefault();
+                        } else {
+                            window.event.returnValue = false;
+                        }
+                        window.location.hash = item.getAttribute('href')
+                    })
+                })
+                window.addEventListener("hashchange", () => {
+                    vue.routerChange();
+                });
+                vue.routerChange();
+            }
+            vue.routerChange = function () {
+                let newPath = window.location.hash
+                let index = vue.router.findIndex((item, index) => {
+                    return newPath === `#${item.path}`
+                })
+                document.querySelector('#router-view').innerHTML = vue.router[index].component
+            }
+            vue.init()
+        }
+        new Vue({
+            router: [
+                {
+                    path: '/home',
+                    component: '<h3>js 实现哈希路由跳转</h3>'
+                },
+                {
+                    path: '/list',
+                    component: '<ul><li>分类一</li><li>分类二</li><li>分类三</li></ul>'
+                },
+                {
+                    path: '/about',
+                    component: '<img src="./title.jpg">'
+                }
+            ]
+        })
+    </script>
+</body>
+
+</html>
